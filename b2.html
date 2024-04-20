@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            transition: background-color 1s;
+        }
+        
+        .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        input[type=number] {
+            width: 50px;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        input[type=number]:focus {
+            box-shadow: 0 0 5px #4CAF50;
+        }
+        
+        button {
+            padding: 10px 20px;
+            margin: 10px 2px;
+            border-radius: 5px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            opacity: 0.8;
+        }
+        
+        #start {
+            background-color: #4CAF50;
+        }
+        
+        #reset {
+            background-color: #f44336;
+        }
+        
+        #time-remaining {
+            background-color: #008CBA;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="center">
+        <h1>Đồng hồ báo thức</h1>
+        <input type="number" id="minutes" placeholder="Phút" min="0">
+        <input type="number" id="seconds" placeholder="Giây" min="0">
+        <br>
+        <button id="start" onclick="startTimer()">START</button>
+        <button id="reset" onclick="resetTimer()">RESET</button>
+        <button id="time-remaining" onclick="showTimeRemaining()">THỜI GIAN CÒN LẠI</button>
+        <p id="time"></p>
+        <audio id="alarm" src="Classic Alarm Clock - Sound Effect for Editing.mp3"></audio>
+    </div>
+    <script>
+        var countdown;
+        var alarm = document.getElementById('alarm');
+
+        function startTimer() {
+            var minutes = document.getElementById('minutes').value;
+            var seconds = document.getElementById('seconds').value;
+            if (isNaN(minutes) || isNaN(seconds)) {
+                alert('Vui lòng nhập số hợp lệ!');
+                return;
+            }
+            if (minutes < 0 || seconds < 0) {
+                alert('Vui lòng nhập số không âm!');
+                return;
+            }
+            if (minutes == 0 && seconds == 0) {
+                alert('Vui lòng nhập thời gian lớn hơn 0!');
+                return;
+            }
+            var time = Number(minutes) * 60 + Number(seconds);
+            countdown = setInterval(function() {
+                time--;
+                var minutesRemaining = Math.floor(time / 60);
+                var secondsRemaining = time % 60;
+                document.getElementById('time').innerHTML = minutesRemaining + ' Phút ' + secondsRemaining + ' Giây ';
+                if (time <= 0) {
+                    clearInterval(countdown);
+                    alarm.play();
+                    alert('Hết giờ!');
+                    document.body.style.backgroundColor = '#f44336';
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(countdown);
+            document.getElementById('minutes').value = '';
+            document.getElementById('seconds').value = '';
+            document.getElementById('time').innerHTML = '';
+            alarm.pause();
+            alarm.currentTime = 0;
+            document.body.style.backgroundColor = '#f0f0f0';
+        }
+
+        function showTimeRemaining() {
+            alert(document.getElementById('time').innerHTML);
+        }
+    </script>
+</body>
+
+</html>
